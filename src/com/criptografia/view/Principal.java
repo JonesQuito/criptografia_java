@@ -3,17 +3,14 @@ package com.criptografia.view;
 import com.criptografia.service.CifrasDeCesar;
 import com.criptografia.service.CriptografiaPorSubstituicao;
 import com.criptografia.service.Arquivo;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.text.Document;
 
 public class Principal extends javax.swing.JFrame {
 
