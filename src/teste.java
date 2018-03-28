@@ -1,6 +1,5 @@
 
 import com.criptografia.service.CriptografiaPorSubstituicao;
-import com.criptografia.util.Util;
 import java.io.File;
 import java.util.Random;
 import java.util.logging.Level;
@@ -12,10 +11,11 @@ public class teste {
     public static void main(String[] args) {
 
         JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        //fc.showOpenDialog(null);
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
-        System.out.println(fc.showSaveDialog(null));
+      
+        
+        System.out.println(fc.showOpenDialog(null));
 
         //File file = fc.getSelectedFile();
         /*     

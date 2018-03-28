@@ -186,22 +186,14 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnProcurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarActionPerformed
         arquivo = Arquivo.abrirArquivo();
+        if(arquivo == null){
+            return;
+        }
         txtCaminhoArquivo.setText(arquivo.getPath());
         txtCaminhoArquivo.setEditable(false);
 
         try {
-            FileReader reader = new FileReader(arquivo);
-            BufferedReader buffer = new BufferedReader(reader);
-
-            String linha;
-            String texto = new String();
-
-            // Lê linha a linha e adiciona em uma variável chamada 'texto'
-            while (buffer.ready()) {
-                linha = buffer.readLine();
-                texto += linha + "\n";
-            }
-            txtTexto.setText(texto);
+            txtTexto.setText(Arquivo.lerArquivoTxt(arquivo));
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
