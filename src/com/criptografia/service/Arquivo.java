@@ -1,4 +1,3 @@
-
 package com.criptografia.service;
 
 import java.io.BufferedWriter;
@@ -7,18 +6,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-public class GravarArquivo {
-    
+public class Arquivo {
+
+    public static File abrirArquivo() {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.showOpenDialog(null);
+        File file = fc.getSelectedFile();
+        return file;
+    }
+
     public static void gravarTxt2(Path caminho, String texto) throws IOException {
         byte[] textoEmBytes = texto.getBytes();
-        
+
         Files.write(caminho, textoEmBytes);
     }
-    
-    
-    public static void gravarTxt(String texto, String destino) throws IOException{
+
+    public static void gravarTxt(String texto, String destino) throws IOException {
         // Cria arquivo
         File file = new File(destino);
 
@@ -35,5 +42,5 @@ public class GravarArquivo {
         bw.write(texto);
         bw.close();
     }
-    
+
 }

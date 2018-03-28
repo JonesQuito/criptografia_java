@@ -2,8 +2,7 @@ package com.criptografia.view;
 
 import com.criptografia.service.CifrasDeCesar;
 import com.criptografia.service.CriptografiaPorSubstituicao;
-import com.criptografia.service.GravarArquivo;
-import com.criptografia.util.Util;
+import com.criptografia.service.Arquivo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -186,7 +185,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCaminhoArquivoActionPerformed
 
     private void btnProcurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarActionPerformed
-        arquivo = Util.abrirArquivo();
+        arquivo = Arquivo.abrirArquivo();
         txtCaminhoArquivo.setText(arquivo.getPath());
         txtCaminhoArquivo.setEditable(false);
 
@@ -239,7 +238,7 @@ public class Principal extends javax.swing.JFrame {
                 if (file != null) {
                     String destino = file.getPath();
                     destino = destino;
-                    GravarArquivo.gravarTxt(txtTexto.getText(), destino);
+                    Arquivo.gravarTxt(txtTexto.getText(), destino);
                     JOptionPane.showMessageDialog(this, "Texto salvo em: " + destino);
                 }
 
