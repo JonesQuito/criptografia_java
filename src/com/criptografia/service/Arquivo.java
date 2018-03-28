@@ -1,7 +1,10 @@
 package com.criptografia.service;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,6 +20,22 @@ public class Arquivo {
         fc.showOpenDialog(null);
         File file = fc.getSelectedFile();
         return file;
+    }
+
+    public static String lerArquivoTxt(File arquivo) throws FileNotFoundException, IOException {
+        FileReader reader = new FileReader(arquivo);
+        BufferedReader buffer = new BufferedReader(reader);
+
+        String linha;
+        String texto = new String();
+
+        // Lê linha a linha e adiciona em uma variável chamada 'texto'
+        while (buffer.ready()) {
+            linha = buffer.readLine();
+            texto += linha + "\n";
+        }
+        
+        return texto;
     }
 
     public static void gravarTxt2(Path caminho, String texto) throws IOException {
