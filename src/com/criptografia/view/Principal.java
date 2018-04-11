@@ -3,6 +3,7 @@ package com.criptografia.view;
 import com.criptografia.service.CifrasDeCesar;
 import com.criptografia.service.CriptografiaPorSubstituicao;
 import com.criptografia.service.Arquivo;
+import com.criptografia.service.CriptografiaAes;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,12 +16,17 @@ import javax.swing.JOptionPane;
 public class Principal extends javax.swing.JFrame {
 
     File arquivo = null;
+    CriptografiaAes cAes;
+    byte[] bytes;
 
-    public Principal() {
+    public Principal() throws Exception {
         initComponents();
+        cAes = new CriptografiaAes();
+        txtTexto.setLineWrap(true);
 
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -37,6 +43,8 @@ public class Principal extends javax.swing.JFrame {
         btnSalvar = new javax.swing.JButton();
         btnCriptografarSubstituicao = new javax.swing.JButton();
         btnDescriptografarSubstituicao = new javax.swing.JButton();
+        btnCriptografarAES = new javax.swing.JButton();
+        btnDescriptografarAES = new javax.swing.JButton();
         txtCaminhoArquivo = new javax.swing.JTextField();
         btnProcurar = new javax.swing.JButton();
 
@@ -73,17 +81,31 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        btnCriptografarSubstituicao.setText("Criptografia por Subst.");
+        btnCriptografarSubstituicao.setText("Cript. por Subst.");
         btnCriptografarSubstituicao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCriptografarSubstituicaoActionPerformed(evt);
             }
         });
 
-        btnDescriptografarSubstituicao.setText("Decriptografar por Subst.");
+        btnDescriptografarSubstituicao.setText("Decript. por Subst.");
         btnDescriptografarSubstituicao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDescriptografarSubstituicaoActionPerformed(evt);
+            }
+        });
+
+        btnCriptografarAES.setText("Criptografia AES");
+        btnCriptografarAES.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCriptografarAESActionPerformed(evt);
+            }
+        });
+
+        btnDescriptografarAES.setText("Decriptografar AES");
+        btnDescriptografarAES.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDescriptografarAESActionPerformed(evt);
             }
         });
 
@@ -94,20 +116,22 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btCriptografarCifra, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnDecriptografarCesar, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(141, 141, 141)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnCriptografarSubstituicao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnDescriptografarSubstituicao, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btCriptografarCifra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDecriptografarCesar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(54, 54, 54)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnCriptografarAES, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDescriptografarAES, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
+                        .addGap(34, 34, 34)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnDescriptografarSubstituicao, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                            .addComponent(btnCriptografarSubstituicao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,14 +140,21 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btCriptografarCifra)
-                            .addComponent(btnCriptografarSubstituicao))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnDecriptografarCesar)
-                            .addComponent(btnDescriptografarSubstituicao)))
-                    .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(28, 28, 28)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btCriptografarCifra)
+                                    .addComponent(btnCriptografarSubstituicao))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnDecriptografarCesar)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnDescriptografarSubstituicao)
+                                        .addComponent(btnDescriptografarAES))))
+                            .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(28, 28, 28))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnCriptografarAES)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -148,16 +179,16 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 245, Short.MAX_VALUE)
+                        .addGap(0, 246, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addContainerGap(255, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(txtCaminhoArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnProcurar, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(32, 32, 32)
+                        .addComponent(btnProcurar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 10, Short.MAX_VALUE))))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -183,7 +214,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnProcurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarActionPerformed
         arquivo = Arquivo.abrirArquivo();
-        if(arquivo == null){
+        if (arquivo == null) {
             return;
         }
         txtCaminhoArquivo.setText(arquivo.getPath());
@@ -207,7 +238,7 @@ public class Principal extends javax.swing.JFrame {
             chave = Integer.parseInt(JOptionPane.showInputDialog(this, "Informe a chave para criptografar o texto."));
             textoCriptografado = CifrasDeCesar.encriptaCesar(txtTexto.getText(), chave);
             txtTexto.setText(textoCriptografado);
-        }catch(NumberFormatException nfe){
+        } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(this, "Desculpe, o valor informado é inválido!");
         }
 
@@ -218,7 +249,7 @@ public class Principal extends javax.swing.JFrame {
             JFileChooser fc = new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             fc.setSelectedFile(arquivo);
-            if(fc.showSaveDialog(null) == 1){
+            if (fc.showSaveDialog(null) == 1) {
                 return;
             }
             File file = fc.getSelectedFile();
@@ -259,7 +290,7 @@ public class Principal extends javax.swing.JFrame {
             chave = Integer.parseInt(JOptionPane.showInputDialog(this, "Informe a chave para criptografar o texto."));
             textoCriptografado = CriptografiaPorSubstituicao.criptografar(txtTexto.getText(), chave);
             txtTexto.setText(textoCriptografado);
-        }catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(this, "Desculpe, o valor informado não é um número!");
         }
     }//GEN-LAST:event_btnCriptografarSubstituicaoActionPerformed
@@ -275,6 +306,29 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Desculpe, o valor informado não é um número!");
         }
     }//GEN-LAST:event_btnDescriptografarSubstituicaoActionPerformed
+
+    private void btnCriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriptografarAESActionPerformed
+        String textoCriptografado = "";
+
+        try {
+            //CriptografiaAes cAes = new CriptografiaAes();
+            bytes = cAes.criptografarTexto(txtTexto.getText().getBytes());
+            txtTexto.setText(new String(cAes.asHex(bytes)));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!");
+        }
+    }//GEN-LAST:event_btnCriptografarAESActionPerformed
+
+    private void btnDescriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescriptografarAESActionPerformed
+
+        try {
+            //CriptografiaAes cAes = new CriptografiaAes();
+            //bytes = cAes.descriptografarTexto(txtTexto.getText().getBytes());
+            txtTexto.setText(new String(cAes.descriptografarTexto(bytes)));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!" + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnDescriptografarAESActionPerformed
 
     /**
      * @param args the command line arguments
@@ -306,15 +360,21 @@ public class Principal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Principal().setVisible(true);
+                try {
+                    new Principal().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btCriptografarCifra;
+    private javax.swing.JButton btnCriptografarAES;
     private javax.swing.JButton btnCriptografarSubstituicao;
     private javax.swing.JButton btnDecriptografarCesar;
+    private javax.swing.JButton btnDescriptografarAES;
     private javax.swing.JButton btnDescriptografarSubstituicao;
     private javax.swing.JButton btnProcurar;
     private javax.swing.JButton btnSalvar;
