@@ -7,6 +7,7 @@ import com.criptografia.service.CriptografiaAes;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -313,7 +314,8 @@ public class Principal extends javax.swing.JFrame {
         try {
             //CriptografiaAes cAes = new CriptografiaAes();
             bytes = cAes.criptografarTexto(txtTexto.getText().getBytes());
-            txtTexto.setText(new String(cAes.asHex(bytes)));
+
+            txtTexto.setText(new String(bytes));
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!");
         }
