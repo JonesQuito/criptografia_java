@@ -32,7 +32,7 @@ public class teste {
             System.out.println("Texto Deriptografado: " + new String(criptografiaAes.descriptografarTexto(cripted)));
             // CriptografiaAes.teste("Jones Quito");
             */
-            Arquivo.writeArrayOfBytes("Jones Quito".getBytes(), Arquivo.abrirArquivo());
+            Arquivo.writeArrayOfBytes("Jones Quito2".getBytes(), Arquivo.abrirArquivo());
         } catch (IOException ex) {
             Logger.getLogger(teste.class.getName()).log(Level.SEVERE, null, ex);
         }

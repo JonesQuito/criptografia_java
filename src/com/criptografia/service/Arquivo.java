@@ -76,10 +76,10 @@ public class Arquivo {
     }
     
     // Escreve um array de bytes em um arquivo
-    public static void readAllBytes(byte[] textoEmBytes, File file) 
+    public static byte[] readAllBytes(File file) 
             throws IOException{
         Path caminho = Paths.get(file.getPath());
-        Files.readAllBytes(caminho);
+        return Files.readAllBytes(caminho);
     }
     
     
@@ -97,6 +97,19 @@ public class Arquivo {
     }
     
     
+    public static Object lerObject(String caminhoDoArquivo)
+            throws FileNotFoundException, IOException, ClassNotFoundException {
+        Object objetoRetorno = null;        
+
+            FileInputStream arquivoOrigem = new FileInputStream(caminhoDoArquivo);
+            try (ObjectInputStream objetoOrigem = new ObjectInputStream(arquivoOrigem)) {
+                objetoRetorno = objetoOrigem.readObject();
+            }            
+        
+        return objetoRetorno;
+    }
+    
+    
     // Ler lista de objetos do Arquivo
      public static ArrayList readListObject(String caminhoDoArquivo) 
              throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -108,21 +121,6 @@ public class Arquivo {
         objetoOrigem.close(); 
         
         return listaDeObjetos;
-    }
-    
-    
-    public static Object lerObject(String caminhoDoArquivo) {
-        Object objetoRetorno = null;        
-        try{
-            FileInputStream arquivoOrigem = new FileInputStream(caminhoDoArquivo);
-            try (ObjectInputStream objetoOrigem = new ObjectInputStream(arquivoOrigem)) {
-                objetoRetorno = objetoOrigem.readObject();
-            }            
-        }catch(Exception erro){
-            JOptionPane.showMessageDialog(null, "Erro na leitura do Arquivo: " + erro);
-            return null;
-        }
-        return objetoRetorno;
     }
 
 }
