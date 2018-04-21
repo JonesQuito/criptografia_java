@@ -7,9 +7,14 @@ import com.criptografia.service.CriptografiaAES;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -18,9 +23,6 @@ import javax.swing.JOptionPane;
 public class Principal extends javax.swing.JFrame {
 
     File arquivo = null;
-    CriptografiaAES criptografiaAES;
-    byte[] bytes;
-    //----------------------------------------------------------
     String message = "";
     SecretKeySpec skeySpec;
     Cipher cipher;
@@ -30,7 +32,6 @@ public class Principal extends javax.swing.JFrame {
     public Principal() throws Exception {
         initComponents();
         txtTexto.setLineWrap(true);
-
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -68,6 +69,11 @@ public class Principal extends javax.swing.JFrame {
 
         txtTexto.setColumns(20);
         txtTexto.setRows(5);
+        txtTexto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTextoKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(txtTexto);
 
         btCriptografarCifra.setText("Cifras de Cesar");
@@ -359,24 +365,25 @@ public class Principal extends javax.swing.JFrame {
     private void btnCriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriptografarAESActionPerformed
         try {
             this.message = txtTexto.getText();
-            criptografiaAES = new CriptografiaAES();
-            skeySpec = criptografiaAES.getKeyAES();
+            skeySpec = CriptografiaAES.getKeyAES();
             cipher = Cipher.getInstance("AES");
-            encrypted = criptografiaAES.criptografar(skeySpec, message, cipher);
-            txtTexto.setText(criptografiaAES.asHex(encrypted));
+            encrypted = CriptografiaAES.criptografar(skeySpec, message, cipher);
+            txtTexto.setText(CriptografiaAES.asHex(encrypted));
+            btnCriptografarAES.setEnabled(false);
         
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!" + ex.getMessage());
-            ex.printStackTrace();
         }
     }//GEN-LAST:event_btnCriptografarAESActionPerformed
 
     private void btnDescriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescriptografarAESActionPerformed
         try {
-            this.message = criptografiaAES.decriptografar(skeySpec, encrypted, cipher);
+            this.message = CriptografiaAES.decriptografar(skeySpec, encrypted, cipher);
             txtTexto.setText(message);
+            btnCriptografarAES.setEnabled(true);
             
-        } catch (Exception ex) {
+        } catch (InvalidKeyException | NoSuchAlgorithmException | BadPaddingException
+                | IllegalBlockSizeException | NoSuchPaddingException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!" + ex.getMessage());
         }
     }//GEN-LAST:event_btnDescriptografarAESActionPerformed
@@ -385,6 +392,10 @@ public class Principal extends javax.swing.JFrame {
         new CriptografiaChaveAssimetrica().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jmiChaveAssimetricaActionPerformed
+
+    private void txtTextoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTextoKeyPressed
+        
+    }//GEN-LAST:event_txtTextoKeyPressed
 
     /**
      * @param args the command line arguments
