@@ -1,41 +1,53 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.criptografia.service;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-/**
- *
- * @author Jones
- */
+import java.security.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.io.*;
+ 
 public class teste {
-    
-    public static void main(String[] args) 
-            /*throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, 
-            IllegalBlockSizeException, BadPaddingException, Exception*/{
-        try {
-            /*CriptografiaAes criptografiaAes = new CriptografiaAes();
-            System.out.println("Texto Original: Jones Quito");
-            byte[] cripted = criptografiaAes.criptografarTexto("Jones Quito de Oliveira".getBytes());
-            String criptografado = new String(criptografiaAes.asHex(cripted));
-            System.out.println("Texto Criptografado: " + criptografado);
-            System.out.println("Texto Deriptografado: " + new String(criptografiaAes.descriptografarTexto(cripted)));
-            // CriptografiaAes.teste("Jones Quito");
-            */
-            Arquivo.writeArrayOfBytes("Jones Quito2".getBytes(), Arquivo.abrirArquivo());
-        } catch (IOException ex) {
-            Logger.getLogger(teste.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
+ 
+  /**
+  * Turns array of bytes into string
+  *
+  * @param buf   Array of bytes to convert to hex string
+  * @return  Generated hex string
+  */
+  public static String asHex (byte buf[]) {
+   StringBuffer strbuf = new StringBuffer(buf.length * 2);
+   int i;
+ 
+   for (i = 0; i < buf.length; i++) {
+    if (((int) buf[i] & 0xff) < 0x10)
+     strbuf.append("0");
+ 
+    strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
+   }
+ 
+   return strbuf.toString();
+  }
+ 
+  public static void main(String[] args) throws Exception {
+    String message="This is just an example";
+ 
+    // Get the KeyGenerator
+    KeyGenerator kgen = KeyGenerator.getInstance("AES");
+    //kgen.init(256); 
+ 
+    // Generate the secret key specs.
+    SecretKey skey = kgen.generateKey();
+    byte[] raw = skey.getEncoded();
+    SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+ 
+    // Instantiate the cipher
+    Cipher cipher = Cipher.getInstance("AES");
+    cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+    byte[] encrypted = cipher.doFinal(message.getBytes());
+    System.out.println("encrypted string: " + asHex(encrypted));
+ 
+    cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+    byte[] original = cipher.doFinal(encrypted);
+    String originalString = new String(original);
+    System.out.println("Original string: " + originalString + " " + asHex(original));
+  }
 }

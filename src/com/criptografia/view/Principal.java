@@ -3,13 +3,14 @@ package com.criptografia.view;
 import com.criptografia.service.CifrasDeCesar;
 import com.criptografia.service.CriptografiaPorSubstituicao;
 import com.criptografia.service.Arquivo;
-import com.criptografia.service.CriptografiaAes;
+import com.criptografia.service.CriptografiaAES;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,17 +18,22 @@ import javax.swing.JOptionPane;
 public class Principal extends javax.swing.JFrame {
 
     File arquivo = null;
-    CriptografiaAes cAes;
+    CriptografiaAES criptografiaAES;
     byte[] bytes;
+    //----------------------------------------------------------
+    String message = "";
+    SecretKeySpec skeySpec;
+    Cipher cipher;
+    byte[] encrypted;
+    //----------------------------------------------------------
 
     public Principal() throws Exception {
         initComponents();
-        cAes = new CriptografiaAes();
         txtTexto.setLineWrap(true);
 
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -351,24 +357,25 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDescriptografarSubstituicaoActionPerformed
 
     private void btnCriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriptografarAESActionPerformed
-        String textoCriptografado = "";
-
         try {
-            //CriptografiaAes cAes = new CriptografiaAes();
-            bytes = cAes.criptografarTexto(txtTexto.getText().getBytes());
-
-            txtTexto.setText(new String(bytes));
+            this.message = txtTexto.getText();
+            criptografiaAES = new CriptografiaAES();
+            skeySpec = criptografiaAES.getKeyAES();
+            cipher = Cipher.getInstance("AES");
+            encrypted = criptografiaAES.criptografar(skeySpec, message, cipher);
+            txtTexto.setText(criptografiaAES.asHex(encrypted));
+        
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!");
+            JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!" + ex.getMessage());
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_btnCriptografarAESActionPerformed
 
     private void btnDescriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescriptografarAESActionPerformed
-
         try {
-            //CriptografiaAes cAes = new CriptografiaAes();
-            //bytes = cAes.descriptografarTexto(txtTexto.getText().getBytes());
-            txtTexto.setText(new String(cAes.descriptografarTexto(bytes)));
+            this.message = criptografiaAES.decriptografar(skeySpec, encrypted, cipher);
+            txtTexto.setText(message);
+            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!" + ex.getMessage());
         }
