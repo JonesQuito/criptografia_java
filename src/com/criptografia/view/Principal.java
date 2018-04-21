@@ -4,6 +4,7 @@ import com.criptografia.service.CifrasDeCesar;
 import com.criptografia.service.CriptografiaPorSubstituicao;
 import com.criptografia.service.Arquivo;
 import com.criptografia.service.CriptografiaAES;
+import com.criptografia.service.MensagemCriptografada;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,7 +35,6 @@ public class Principal extends javax.swing.JFrame {
         txtTexto.setLineWrap(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
 
     @SuppressWarnings("unchecked")
@@ -63,6 +63,9 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jmCriptografia = new javax.swing.JMenu();
         jmiChaveAssimetrica = new javax.swing.JMenuItem();
+        jmChaveSimetricaAES = new javax.swing.JMenu();
+        jmiAbrirObj = new javax.swing.JMenuItem();
+        jmiSalvarObj = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 204, 204));
@@ -241,6 +244,26 @@ public class Principal extends javax.swing.JFrame {
         });
         jmCriptografia.add(jmiChaveAssimetrica);
 
+        jmChaveSimetricaAES.setText("Chave Simetrica AES");
+
+        jmiAbrirObj.setText("Abrir Obj");
+        jmiAbrirObj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiAbrirObjActionPerformed(evt);
+            }
+        });
+        jmChaveSimetricaAES.add(jmiAbrirObj);
+
+        jmiSalvarObj.setText("Salvar como Obj");
+        jmiSalvarObj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiSalvarObjActionPerformed(evt);
+            }
+        });
+        jmChaveSimetricaAES.add(jmiSalvarObj);
+
+        jmCriptografia.add(jmChaveSimetricaAES);
+
         jMenuBar1.add(jmCriptografia);
 
         setJMenuBar(jMenuBar1);
@@ -286,6 +309,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProcurarActionPerformed
 
     private void btCriptografarCifraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCriptografarCifraActionPerformed
+        if (txtTexto.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Não há o que ser criptografado!");
+            return;
+        }
         int chave = 0;
         String textoCriptografado = "";
 
@@ -326,6 +353,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnDecriptografarCesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDecriptografarCesarActionPerformed
+        if (txtTexto.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Não há o que ser descriptografado!");
+            return;
+        }
         int chave = 0;
         String textoDecriptografado = "";
         try {
@@ -338,6 +369,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDecriptografarCesarActionPerformed
 
     private void btnCriptografarSubstituicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriptografarSubstituicaoActionPerformed
+        if (txtTexto.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Não há o que ser criptografado!");
+            return;
+        }
         int chave = 0;
         String textoCriptografado = "";
 
@@ -351,6 +386,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCriptografarSubstituicaoActionPerformed
 
     private void btnDescriptografarSubstituicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescriptografarSubstituicaoActionPerformed
+        if (txtTexto.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Não há o que ser descriptografado!");
+            return;
+        }
         int chave = 0;
         String textoDecriptografado = "";
         try {
@@ -363,6 +402,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDescriptografarSubstituicaoActionPerformed
 
     private void btnCriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriptografarAESActionPerformed
+        if (txtTexto.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Não há o que ser criptografado!");
+            return;
+        }
         try {
             this.message = txtTexto.getText();
             skeySpec = CriptografiaAES.getKeyAES();
@@ -370,18 +413,26 @@ public class Principal extends javax.swing.JFrame {
             encrypted = CriptografiaAES.criptografar(skeySpec, message, cipher);
             txtTexto.setText(CriptografiaAES.asHex(encrypted));
             btnCriptografarAES.setEnabled(false);
-        
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!" + ex.getMessage());
         }
     }//GEN-LAST:event_btnCriptografarAESActionPerformed
 
     private void btnDescriptografarAESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescriptografarAESActionPerformed
+        if (txtTexto.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Não há o que ser descriptografado!");
+            return;
+        }if (skeySpec == null){
+            JOptionPane.showMessageDialog(this, "A chave AES para decriptografar não foi carregada!");
+            return;
+        }
         try {
+            Cipher cipher = Cipher.getInstance("AES");
             this.message = CriptografiaAES.decriptografar(skeySpec, encrypted, cipher);
             txtTexto.setText(message);
             btnCriptografarAES.setEnabled(true);
-            
+
         } catch (InvalidKeyException | NoSuchAlgorithmException | BadPaddingException
                 | IllegalBlockSizeException | NoSuchPaddingException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao instanciar objeto CriptografiaAes!" + ex.getMessage());
@@ -394,8 +445,68 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiChaveAssimetricaActionPerformed
 
     private void txtTextoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTextoKeyPressed
-        
+
     }//GEN-LAST:event_txtTextoKeyPressed
+
+    private void jmiAbrirObjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAbrirObjActionPerformed
+        try{
+        String mensage = "";
+        Cipher cipher = Cipher.getInstance("AES");
+        
+        File arquivo = Arquivo.abrirArquivo();
+        MensagemCriptografada mc = (MensagemCriptografada) Arquivo.lerObject(arquivo.getAbsolutePath());
+        //message = CriptografiaAES.decriptografar(mc.getSkeySpec(), mc.getMensagem(), cipher);
+    
+        skeySpec = mc.getSkeySpec();
+        
+        encrypted = mc.getMensagem();
+        txtTexto.setText(CriptografiaAES.asHex(encrypted));
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(this, "Erro ao abrir o pacote criptografado!" + ex.getMessage());
+        }
+        
+        
+        
+        
+        
+    }//GEN-LAST:event_jmiAbrirObjActionPerformed
+
+    private void jmiSalvarObjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSalvarObjActionPerformed
+        if(skeySpec == null){
+            JOptionPane.showMessageDialog(this, "Para salvar como objeto criptografe a mensagem com AES!");
+            return;
+        }
+        try {
+            String mensagem = txtTexto.getText();
+            Cipher cipher = Cipher.getInstance("AES");
+            SecretKeySpec skeyspec = CriptografiaAES.getKeyAES();
+            MensagemCriptografada mc = new MensagemCriptografada();
+
+            encrypted = CriptografiaAES.criptografar(skeyspec, mensagem, cipher);
+
+            mc.setSkeySpec(skeyspec);
+            mc.setMensagem(encrypted);
+
+            File file = null;
+            JFileChooser fc = new JFileChooser();
+            fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            fc.setSelectedFile(file);
+            if (fc.showSaveDialog(null) == 1) {
+                return;
+            }
+            file = fc.getSelectedFile();
+
+            if (file != null) {
+                String destino = file.getPath();
+                destino = destino;
+                Arquivo.writeObject(mc, destino);
+                JOptionPane.showMessageDialog(null, "Pacote salvo em: " + destino);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jmiSalvarObjActionPerformed
 
     /**
      * @param args the command line arguments
@@ -452,11 +563,14 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenu jmChaveSimetricaAES;
     private javax.swing.JMenu jmCriptografia;
     private javax.swing.JMenuItem jmiAbrirArquivo;
+    private javax.swing.JMenuItem jmiAbrirObj;
     private javax.swing.JMenuItem jmiChaveAssimetrica;
     private javax.swing.JMenu jmiSair;
     private javax.swing.JMenuItem jmiSalvarArquivo;
+    private javax.swing.JMenuItem jmiSalvarObj;
     private javax.swing.JTextField txtCaminhoArquivo;
     private javax.swing.JTextArea txtTexto;
     // End of variables declaration//GEN-END:variables

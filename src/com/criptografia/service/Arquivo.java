@@ -26,7 +26,6 @@ public class Arquivo {
         if(fc.showOpenDialog(null)== 1){
             return null;
         }
-            
         File file = fc.getSelectedFile();
         return file;
     }
@@ -43,6 +42,9 @@ public class Arquivo {
             linha = buffer.readLine();
             texto += linha + "\n";
         }
+        
+        buffer.close();
+        reader.close();
         
         return texto;
     }

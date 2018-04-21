@@ -39,6 +39,29 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiChaveAssimetricaActionPerformed"/>
               </Events>
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="jmChaveSimetricaAES">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Chave Simetrica AES"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="jmiAbrirObj">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Abrir Obj"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiAbrirObjActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="jmiSalvarObj">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Salvar como Obj"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiSalvarObjActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
           </SubComponents>
         </Menu>
       </SubComponents>
